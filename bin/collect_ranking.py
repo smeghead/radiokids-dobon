@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 
+import sys
 import os
+import time
 import requests
 from bs4 import BeautifulSoup
 
 URL_FORMAT = 'https://nendai-ryuukou.com/%d/song/%d.html'
+URL_FORMAT_2010 = 'https://nendai-ryuukou.com/%d/song.html'
 
 class Song:
     year = 0
@@ -16,18 +19,26 @@ class Song:
         self.year = year
         self.title = title.replace('\n', '')
         self.artist = artist.replace('\n', '')
-        sales = sales.replace('万', '')
-        self.sales = float(sales) * 10000
+        sales = sales.replace('万', '').replace('b', '') # なぜか2018年の売上枚数にbがあるので除外する。
+        if sales != '':
+            self.sales = float(sales) * 10000
 
     def format(self):
         return '%s\t%s\t%d' % (self.title, self.artist, self.sales)
 
 def get_content(year):
-    url = URL_FORMAT % (int(year / 10) * 10, year)
+    if year > 2009:
+        url = URL_FORMAT_2010 % year
+    else:
+        url = URL_FORMAT % (int(year / 10) * 10, year)
 
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     table = soup.find('table', class_='songTable')
+    if table == None:
+        print('Error: %d: table.songTable テーブルを取得できませんでした。' % year, file=sys.stderr)
+        print(soup)
+        sys.exit(1)
     trs = table.select('tr')
 
     songs = []
@@ -50,11 +61,7 @@ def save_data(year, songs):
 for year in range(1970, 2022):
     songs = get_content(year)
     save_data(year, songs)
-    sleep(20)
+    print('saved: %d' % year)
+    time.sleep(20)
 
-
-
-#songs = get_content(2001)
-
-#for s in songs:
-#   print(s.format()) 
+print('complate')
