@@ -383,7 +383,7 @@ class Song:
         self.title = title
         self.artist = artist
         self.chars = list(set(list(title_kana + artist_kana)))
-        self.sales = sales
+        self.sales = int(sales)
 
 
 if __name__ == '__main__':
@@ -398,6 +398,7 @@ if __name__ == '__main__':
     for filename in glob.glob('data/*.csv'):
         with open(filename, 'r') as f:
             for line in f.readlines():
+                line = line.rstrip()
                 cols = line.split('\t')
                 title = cols[0]
                 artist = cols[1]
