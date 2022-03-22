@@ -2,6 +2,7 @@
 
 import sys
 import re
+import json
 import pykakasi
 import alkana
 from pyokaka import okaka
@@ -372,6 +373,18 @@ def convert(str):
     except Exception as e:
         print('[%s] %s' % (str, e), file=sys.stderr)
 
+songs = []
+class Song:
+    title = ''
+    artist = ''
+    chars = []
+    sales = 0
+    def __init__(self, title, artist, title_kana, artist_kana, sales):
+        self.title = title
+        self.artist = artist
+        self.chars = list(set(list(title_kana + artist_kana)))
+        self.sales = sales
+
 
 if __name__ == '__main__':
     assert convert('漢字') == 'カンジ', '漢字を変換できること'
@@ -388,10 +401,16 @@ if __name__ == '__main__':
                 cols = line.split('\t')
                 title = cols[0]
                 artist = cols[1]
+                sales = cols[2]
                 convert_title = convert(title)
                 assert katakana.fullmatch(convert_title) != None, 'カタカナ変換失敗: %s -> [%s]' % (title, convert_title)
                 convert_artist = convert(artist)
                 assert katakana.fullmatch(convert_artist) != None, 'カタカナ変換失敗: %s -> [%s]' % (artist, convert_artist)
+                songs.append(Song(title, artist, convert_title, convert_artist, sales).__dict__)
+
+    with open('data/songs.json', 'w') as f:
+        json.dump(songs, f, indent=2)
+
     
 
 
