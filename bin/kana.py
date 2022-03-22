@@ -79,7 +79,7 @@ dictionary = {'SMAP': 'スマップ',
         'キ・ス・ウ・マ・イ 〜KISS YOUR MIND〜/S.O.S (Smile On Smile)': 'キ・ス・ウ・マ・イ エスオーエス',
         'EXILE TRIBE  (三代目 J Soul Brothers VSGENERATIONS)': 'エグザイルトライブサンダイメジェイソウルブラザーズブイエスジェネレーションズ',
         'SNOW DOMEの約束／Luv Sick': 'スノードームノヤクソク',
-        'Calling×Breathless': 'コーリング/ブレスレス',
+        'Calling×Breathless': 'コーリング ブレスレス',
         '175R': 'イナゴライダー',
         'GReeeeN': 'グリーン',
         'FREAKY': 'フリーキー',
@@ -239,6 +239,8 @@ dictionary = {'SMAP': 'スマップ',
         '【es】～Theme of es～': 'エス',
         'MAICCA～まいっか': 'マイッカ',
         'あなただけを～Summer Heartbreak～': 'アナタダケヲ サマーハートブレイク',
+        'Wait&See ～リスク～': 'ウェイト・アンド・シー リスク',
+        'ﾊﾞｨﾊﾞｨDuﾊﾞｨ～See you again～／A MY GIRL FRIEND': 'バイバイ・ドゥバイ シー・ユー・アゲイン ア・マイ・ガール・フレンド',
         }
 english_dictionary = {'I': 'アイ',
         'Daylight': 'デイライト',
@@ -316,6 +318,10 @@ english_dictionary = {'I': 'アイ',
         'FANTASISTA': 'ファンタジスタ',
         'KNOCKIN\'ON': 'ノッキンオン',
         'everybody': 'エブリバディ',
+        'OVERNIGHT': 'オーバーナイト',
+        'MONKEY\'S': 'モンキーズ',
+        'PEANUTS': 'ピーナッツ',
+        'Rock\'n': 'ロックン',
         }
 
 def remove_ignore_chars(str):
@@ -374,7 +380,7 @@ if __name__ == '__main__':
     assert convert('SMAP') == 'スマップ', '定義語を変換できること'
     assert convert('Official髭男dism') == 'オフィシャルヒゲダンディズム', '定義語を変換できること'
     assert convert('L\'Arc～en～Ciel') == 'ラルクアンシエル', '定義語を変換できること'
-    katakana = re.compile('[\u30A1-\u30F4・★＃＊’！ー、。，&～…「」『』（）“＆0-9 ]+') # カタカナ
+    katakana = re.compile('[\u30A1-\u30F4・★＃＊∞’！－ー、。，&～…「」『』（）“＆0-9 ]+') # カタカナ
     import glob
     for filename in glob.glob('data/*.csv'):
         with open(filename, 'r') as f:
