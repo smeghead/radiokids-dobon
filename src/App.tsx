@@ -2,14 +2,14 @@ import React, { useRef, useState } from 'react'
 import './App.css'
 import SongList from './song/SongList'
 
-function App() {
+function App(): JSX.Element {
   const [chars, setChars] = useState<string>('')
   const [includes, setIncludes] = useState<boolean>(true)
 
   const charsRef = useRef<HTMLInputElement | null>(null)
   const includesRef = useRef<HTMLSelectElement | null>(null)
 
-  const searchHandler = () => {
+  const searchHandler = (): void => {
     setChars(charsRef.current!.value)
     setIncludes(includesRef.current!.value === 'true')
   }
