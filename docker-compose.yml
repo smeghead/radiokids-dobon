@@ -10,6 +10,7 @@ services:
     command: sh -c "yarn dev"
     ports:
      - "3000:3000"
+     - "9005:9005"
     environment:
      - CHOKIDAR_USEPOLLING=true
 volumes:

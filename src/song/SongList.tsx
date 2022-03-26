@@ -1,59 +1,68 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getDocs, getFirestore } from "firebase/firestore"
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import React, { useEffect, useState } from "react";
+import initSqlJs from 'sql.js'
+import dbFile from '../../public/songs.db?url'
+import wasm from '../../node_modules/sql.js/dist/sql-wasm.wasm?url'
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAQXDO2Vf3LTyy3A7Uw5Srqyl1OYKmo8-0",
-  authDomain: "radiokids-eed86.firebaseapp.com",
-  projectId: "radiokids-eed86",
-  storageBucket: "radiokids-eed86.appspot.com",
-  messagingSenderId: "150855601405",
-  appId: "1:150855601405:web:e241e0d37ceebe17890294",
-  measurementId: "G-K6CZP95YNH"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
-const db = getFirestore();
-import { collection, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
-const songsRef = collection(db, "songs");
+const sqlPromise = initSqlJs({
+    locateFile: (file: string) => `${wasm}/../${file}`
+});
+const initDb = async () => {
+    const dataPromise = fetch(dbFile).then(res => res.arrayBuffer());
+    const [SQL, buf] = await Promise.all([sqlPromise, dataPromise])
+    return new SQL.Database(new Uint8Array(buf));
+}
 
 type Song = {
     id: string;
     title: string;
     artist: string;
+    sales: Number;
 }
-function SongList(): JSX.Element {
+type Props = {
+    chars: string;
+    includes: boolean;
+}
+
+const uniq = (array: string[]) => {
+    return array.filter((elem, index, self) => self.indexOf(elem) === index);
+}
+
+function SongList(props: Props): JSX.Element {
     const [songs, setSongs] = useState<Song[]>([])
     useEffect(() => {
         const f = async () => {
-            const q = query(songsRef, where("artist", "==", 'AKB48'));
-            const querySnapshot = await getDocs(q);
+            const chars = props.chars
+            const includes = props.includes
+            if (chars.length === 0) {
+                setSongs([])
+                return
+            }
             const songs: Song[] = []
-            querySnapshot.forEach((doc) => {
-                const song = doc.data()
+            const db = await initDb()
+            const stmt = db.prepare("SELECT * FROM songs WHERE chars like $chars");
+            const cs = uniq(chars.split('')).sort()
+            stmt.bind({$chars: '%' + cs.join('%') + '%'})
+            while (stmt.step()) {
+                const record = stmt.getAsObject()
                 songs.push({
-                    id: song.id,
-                    title: song.title,
-                    artist: song.artist,
+                    id: record.id?.toString() ?? '',
+                    title: record.title?.toString() ?? '',
+                    artist: record.artist?.toString() ?? '',
+                    sales: new Number(record.sales?.toString() ?? '0'),
                 })
-            });
+            }
+            console.log('collected')
             setSongs(songs)
         }
         f()
-    }, [])
+    }, [props])
 
     return (
-        <ul>
-            {songs.map((song) => <li key={song.id}>{song.title} {song.artist}</li>)}
-        </ul>
+        <div className='box'>
+            <ul>
+                {songs.map((song) => <li key={song.id}>{song.title} {song.artist}</li>)}
+            </ul>
+        </div>
     )
 }
 export default SongList
