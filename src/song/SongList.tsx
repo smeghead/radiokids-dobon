@@ -59,10 +59,15 @@ function SongList(props: Props): JSX.Element {
     }, [props])
 
     return (
+        <div>
+        {songs.length > 0 ?
         <div className='box'>
             <ul>
                 {songs.map((song) => <li key={song.id}>{song.title} {song.artist}</li>)}
             </ul>
+        </div>
+        : <div />
+        }
         </div>
     )
 }

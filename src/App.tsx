@@ -26,9 +26,9 @@ function App(): JSX.Element {
   }
   return (
     <div className="App container is-max-desktop">
-      <nav className="navbar" role="navigation" aria-label="main navigation">
+      <nav className="navbar is-link" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
-          <p className='navbar-item'>Radio Kids ドボン(Unofficial)</p>
+          <p className='navbar-item has-text-weight-bold ml-4'>Radio Kids ドボン(Unofficial)</p>
         </div>
       </nav>
       <div className="box">
@@ -56,7 +56,7 @@ function App(): JSX.Element {
             </div>
           </div>
           <div className='column'>
-            <button className="button is-primary" onClick={searchHandler}>検索</button>
+            <button className="button is-link" onClick={searchHandler}>検索</button>
           </div>
         </div>
         <div className='columns'>
@@ -66,6 +66,17 @@ function App(): JSX.Element {
         </div>
       </div>
       <SongList chars={chars} includes={includes} />
+      <footer className="footer">
+        <div className="content has-text-centered">
+          <p>
+            k-mixのラジオ番組 <a href="https://www.k-mix.co.jp/radiokids/" target="_blank">Radio Kids</a>のリクエストテーマは、「曲名・アーティスト名にカorモのいずれかが入っている曲」のような
+            ルールがあることがあります。リクエストする曲が思い付かない時に曲を検索してみてください。
+          </p>
+          <p>
+            <strong>Radio Kids ドボン(Unofficial)</strong> by <a href="https://twitter.com/smeghead">@smeghead</a>. 
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
