@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import initSqlJs from 'sql.js'
 import dbFile from '../../public/songs.db?url'
 import wasm from '../../node_modules/sql.js/dist/sql-wasm.wasm?url'
+import SongQuery from './SongQuery'
 
 const sqlPromise = initSqlJs({
-    locateFile: (file: string) => `${wasm}/../${file}`
+    locateFile: (file: string) => wasm
 });
 const initDb = async () => {
     const dataPromise = fetch(dbFile).then(res => res.arrayBuffer());
@@ -39,9 +40,9 @@ function SongList(props: Props): JSX.Element {
             }
             const songs: Song[] = []
             const db = await initDb()
-            const stmt = db.prepare("SELECT * FROM songs WHERE chars like $chars");
-            const cs = uniq(chars.split('')).sort()
-            stmt.bind({$chars: '%' + cs.join('%') + '%'})
+            const query = new SongQuery(chars, includes)
+            const stmt = db.prepare(query.sql);
+            stmt.bind(query.params)
             while (stmt.step()) {
                 const record = stmt.getAsObject()
                 songs.push({
