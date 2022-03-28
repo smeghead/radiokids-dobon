@@ -13,6 +13,7 @@ const onlyKana = (str: string): string => {
 function App(): JSX.Element {
   const [chars, setChars] = useState<string>('')
   const [includes, setIncludes] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(() => false)
 
   const charsRef = useRef<HTMLInputElement | null>(null)
   const includesRef = useRef<HTMLSelectElement | null>(null)
@@ -56,7 +57,7 @@ function App(): JSX.Element {
             </div>
           </div>
           <div className='column'>
-            <button className="button is-link" onClick={searchHandler}>検索</button>
+            <button className={'button is-link ' + (loading ? 'is-loading': '')} onClick={searchHandler}>検索</button>
           </div>
         </div>
         <div className='columns'>
@@ -65,7 +66,7 @@ function App(): JSX.Element {
           </div>
         </div>
       </div>
-      <SongList chars={chars} includes={includes} />
+      <SongList chars={chars} includes={includes} setLoading={setLoading} />
       <footer className="footer">
         <div className="content has-text-centered">
           <p>

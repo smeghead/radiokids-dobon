@@ -22,6 +22,7 @@ type Song = {
 type Props = {
     chars: string;
     includes: boolean;
+    setLoading: (loaging: boolean) => void;
 }
 
 const uniq = (array: string[]) => {
@@ -31,6 +32,7 @@ const uniq = (array: string[]) => {
 function SongList(props: Props): JSX.Element {
     const [songs, setSongs] = useState<Song[]>([])
     useEffect(() => {
+        console.log('useEffect')
         const f = async () => {
             const chars = props.chars
             const includes = props.includes
@@ -38,6 +40,7 @@ function SongList(props: Props): JSX.Element {
                 setSongs([])
                 return
             }
+            props.setLoading(true)
             const songs: Song[] = []
             const db = await initDb()
             const query = new SongQuery(chars, includes)
@@ -52,11 +55,11 @@ function SongList(props: Props): JSX.Element {
                     sales: new Number(record.sales?.toString() ?? '0'),
                 })
             }
-            console.log('collected')
             setSongs(songs)
+            props.setLoading(false)
         }
         f()
-    }, [props])
+    }, [props.chars, props.includes])
 
     return (
         <div>
