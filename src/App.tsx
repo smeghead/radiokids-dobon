@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './App.css'
 import SongList from './song/SongList'
 
@@ -25,6 +25,25 @@ function App(): JSX.Element {
     setChars(charsRef.current!.value)
     setIncludes(includesRef.current!.value === 'true')
   }
+  useEffect(() => {
+    if (location.hash.length === 0) {
+      return
+    }
+    const params = new URLSearchParams(location.hash.substring(1))
+    charsRef.current!.value = params.get('chars') ?? ''
+    includesRef.current!.value = params.get('includes') === '1' ? 'true' : 'false'
+    searchHandler()
+  }, [])
+  useEffect(() => {
+    if (chars.length === 0) {
+      return
+    }
+    const hash = new URLSearchParams({
+      chars: chars,
+      includes: includes ? '1' : '0',
+    }).toString()
+    document.location.hash = hash
+  }, [chars, includes])
   return (
     <div className="App container is-max-desktop">
       <nav className="navbar is-link" role="navigation" aria-label="main navigation">
