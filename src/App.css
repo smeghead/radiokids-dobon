@@ -1,0 +1,6 @@
+.SongList ul li {
+    padding: 0.5rem;
+}
+.SongList ul li:nth-child(even) {
+    background-color: #eef;
+}

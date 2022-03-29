@@ -62,7 +62,7 @@ function SongList(props: Props): JSX.Element {
     }, [props.chars, props.includes])
 
     return (
-        <div>
+        <div className='SongList'>
         {songs.length > 0 ?
         <div className='box'>
             <ul>
